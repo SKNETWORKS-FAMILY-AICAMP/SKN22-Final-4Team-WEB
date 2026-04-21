@@ -58,6 +58,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+backend/roleplay/frontendexample/dist/
 
 # Environment variables
 .env
@@ -67,6 +68,9 @@ yarn-error.log*
 
 # Databases
 db.sqlite3
+
+# Local development settings
+local_settings.py
 db.sqlite3-journal
 .chroma_db/
 backend/db.sqlite3
@@ -82,6 +86,7 @@ docker-compose.override.yml
 backend/chat_debug.log
 backend/debug.log
 debug_output.txt
+dump.rdb
 
 # Media / Uploaded files
 media/
@@ -106,3 +111,41 @@ generated_videos/
 # Project specific
 z_structure.md
 lambda.md
+redis-win/
+zzAnMJe/
+problem-solving.md
+COLLABORATION_GUIDE.md
+
+# Local-only plugin/skill installs (not part of project source)
+/langchain-skills/
+/langsmith-skills/
+
+# Local scratch / experimental folders
+/klein_img/
+/notebooklm/
+
+# node_modules at repo root (Django project — no JS deps here)
+/node_modules/
+
+# Audio files
+*.wav
+*.mp3
+
+# img_gen wildcard files
+img_gen/wildcard/*
+
+# Local development and temporary scripts
+local_settings.py
+backend/config/local_settings.py
+tmp_script.py
+dino_test.py
+generate_images.py
+update_img.py
+
+# Keep large video assets out of the repo (use YouTube/S3 instead)
+backend/static/video/
+
+# Ensure branding and UI images in static are tracked and deployed
+!backend/static/images/
+!backend/static/images/**
+hari-key.pem

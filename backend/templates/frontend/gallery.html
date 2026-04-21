@@ -1,0 +1,351 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hari — Gallery</title>
+<link rel="icon" type="image/png" href="{% static 'images/hari_favicon.png' %}?v=2">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/NeoDunggeunmo.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_eight@1.0/DOSSaemmul.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2301-wagle@1.0/WagleWagle.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
+<script src="{% static 'js/theme.js' %}"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --f-pixel:'DOSSaemmul',sans-serif;
+  --f-playful:'WagleWagle',sans-serif;
+  --f-neo:'NeoDunggeunmo',sans-serif;
+  --bg:#ffffff;--ink:#2a2420;--acc:#ff7b8a;--dim:#9e9490;
+  --bdr:rgba(255,123,138,0.12);--bdr2:rgba(255,123,138,0.22);
+}
+
+/* 다크 모드 */
+html[data-theme="dark"]{
+  --bg:#1a1612;--ink:#f5f1ed;--acc:#ff8a9b;--dim:#9a8f87;
+  --bdr:rgba(255,123,138,0.15);--bdr2:rgba(255,123,138,0.25);
+}
+html[data-theme="dark"] .gl-nav{background:rgba(26,22,18,0.95);}
+html[data-theme="dark"] ::-webkit-scrollbar-thumb{background:#ff8a9b;}
+
+html{scroll-behavior:smooth;overflow-x:hidden;}
+body{background:var(--bg);color:var(--ink);font-family:Pretendard,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;letter-spacing:-0.02em;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden;max-width:100vw;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:var(--acc);border-radius:3px;}
+
+/* NAV */
+.gl-nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;border-bottom:.5px solid var(--bdr);background:rgba(255,255,255,0.95);backdrop-filter:blur(16px);}
+.gl-nav-logo img{height:44px;width:auto;mix-blend-mode:multiply;}
+/* HEADER */
+.gl-header{margin-top:64px;padding:4rem 2.5rem 2.5rem;border-bottom:.5px solid var(--bdr);display:flex;align-items:flex-end;justify-content:space-between;}
+.gl-header-left{flex:1;}
+.gl-eyebrow{font-family:'DM Mono',monospace;font-size:.58rem;letter-spacing:.26em;text-transform:uppercase;color:var(--dim);margin-bottom:.8rem;}
+.gl-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(4rem,10vw,9rem);line-height:.85;color:var(--ink);}
+.gl-count{font-family:'DM Mono',monospace;font-size:.6rem;letter-spacing:.16em;color:var(--dim);margin-top:.8rem;}
+.gl-count em{color:var(--acc);font-style:normal;}
+.gl-nav-back{font-family:Pretendard,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;font-size:1.1rem;font-weight:500;letter-spacing:-0.02em;color:#6b6460;text-decoration:none;display:flex;align-items:center;gap:.5rem;transition:color .2s;-webkit-font-smoothing:antialiased;}
+.gl-nav-back:hover{color:var(--acc);}
+.gl-nav-back svg{transition:transform .2s;}
+.gl-nav-back:hover svg{transform:translateX(-3px);}
+
+/* THEME TOGGLE */
+.gl-theme-wrap{display:flex;align-items:center;gap:.4rem;flex-shrink:0;margin-left:auto;}
+#theme-toggle{position:relative;width:44px;height:26px;background:#ddd;border:none;border-radius:20px;cursor:pointer;transition:background .3s ease,box-shadow .2s ease;display:flex;align-items:center;padding:0 2px;box-shadow:inset 0 1px 3px rgba(0,0,0,0.1);flex-shrink:0;}
+#theme-toggle::after{content:'';position:absolute;width:22px;height:22px;background:#fff;border-radius:50%;left:2px;transition:left .3s cubic-bezier(0.45,0,0.15,1),background .3s ease;box-shadow:0 2px 6px rgba(0,0,0,0.15);}
+#theme-toggle.off{background:#e8e8e8;}
+#theme-toggle.off::after{left:2px;background:#fff;}
+#theme-toggle.on{background:var(--ink);}
+#theme-toggle.on::after{left:20px;background:#fff;}
+#theme-toggle:hover{box-shadow:inset 0 1px 3px rgba(0,0,0,0.15),0 0 8px rgba(255,123,138,0.2);}
+#theme-toggle.on:hover{box-shadow:inset 0 1px 3px rgba(0,0,0,0.2),0 0 8px rgba(255,123,138,0.3);}
+.gl-theme-ico{font-size:.85rem;opacity:.65;transition:opacity .2s;white-space:nowrap;flex-shrink:0;}
+
+html[data-theme="dark"] .gl-nav{background:rgba(26,22,18,0.95);}
+html[data-theme="dark"] #theme-toggle.on{background:#f5f1ed;}
+html[data-theme="dark"] #theme-toggle.on::after{background:var(--ink);}
+
+/* GRID */
+.gl-grid{padding:2rem 2.5rem 4rem;display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+.gl-item{overflow:hidden;cursor:pointer;position:relative;}
+.gl-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .45s cubic-bezier(.25,.46,.45,.94);}
+.gl-item:hover img{transform:scale(1.04);}
+.gl-item-overlay{position:absolute;inset:0;background:rgba(42,36,32,0);transition:background .3s;display:flex;align-items:flex-end;padding:1rem;}
+.gl-item:hover .gl-item-overlay{background:rgba(42,36,32,0.35);}
+.gl-item-num{font-family:'DM Mono',monospace;font-size:.56rem;letter-spacing:.14em;color:rgba(255,255,255,0);transition:color .3s;}
+.gl-item:hover .gl-item-num{color:rgba(255,255,255,0.8);}
+
+/* LIGHTBOX */
+#lightbox{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.92);display:none;align-items:center;justify-content:center;padding:2rem;}
+#lightbox.show{display:flex;}
+#lb-img{max-width:90vw;max-height:88vh;object-fit:contain;display:block;}
+#lb-close{position:absolute;top:1.5rem;right:1.8rem;font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.18em;color:rgba(255,255,255,0.7);background:transparent;border:none;cursor:pointer;text-transform:uppercase;transition:color .2s;}
+#lb-close:hover{color:#fff;}
+#lb-prev,#lb-next{position:absolute;top:50%;transform:translateY(-50%);font-size:1.8rem;color:rgba(255,255,255,0.5);background:transparent;border:none;cursor:pointer;padding:.5rem 1rem;transition:color .2s;}
+#lb-prev:hover,#lb-next:hover{color:#fff;}
+#lb-prev{left:1rem;}
+#lb-next{right:1rem;}
+#lb-info{position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);font-family:'DM Mono',monospace;font-size:.55rem;letter-spacing:.16em;color:rgba(255,255,255,0.5);}
+
+/* FOOTER */
+.gl-footer{
+  border-top:.5px solid var(--bdr);
+  padding:2rem 2.5rem;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.gl-footer-copy{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);}
+.gl-footer-links{display:flex;gap:1.5rem;}
+.gl-footer-links a{font-family:'DM Mono',monospace;font-size:.52rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);text-decoration:none;transition:color .2s;}
+.gl-footer-links a:hover{color:var(--acc);}
+
+/* MEDIA QUERIES */
+@media(max-width:1200px){.gl-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:768px){.gl-grid{grid-template-columns:repeat(2,1fr);padding:1.5rem;}.gl-header{flex-direction:column;gap:1.5rem;align-items:flex-start;}}
+@media(max-width:480px){.gl-grid{grid-template-columns:repeat(2,1fr);gap:.6rem;padding:1rem;}.gl-header{padding:2.5rem 1.2rem 1.5rem;flex-direction:column;gap:.8rem;align-items:flex-start;}.gl-nav{padding:0 1.2rem;height:56px;}.gl-footer{flex-direction:column;gap:1rem;text-align:center;}}
+@media(max-width:360px){.gl-grid{grid-template-columns:1fr;}.gl-title{font-size:3.5rem;}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="gl-nav">
+  <a class="gl-nav-logo" href="/">
+    <img src="{% static 'images/hari_logo_none.png' %}?v=2" alt="HARI">
+  </a>
+  <div class="gl-theme-wrap">
+    <span class="gl-theme-ico">☀️</span>
+    <button id="theme-toggle" class="off" onclick="toggleTheme()" aria-label="다크 모드 전환" title="다크/라이트 모드 전환"></button>
+    <span class="gl-theme-ico">🌙</span>
+  </div>
+  <a class="gl-nav-back" href="/">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    홈으로
+  </a>
+</nav>
+
+<!-- HEADER -->
+<div class="gl-header">
+  <div class="gl-header-left">
+    <div class="gl-title">GALLERY</div>
+    <div class="gl-count">총 <em id="visible-count">28</em>장의 사진</div>
+  </div>
+</div>
+
+<!-- GRID -->
+<div class="gl-grid" id="gl-grid">
+  <div class="gl-item" data-cat="portrait" onclick="openLb(0)">
+    <img src="{% static 'images/hari_image31.webp' %}" alt="Hari 31" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">31</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(1)">
+    <img src="{% static 'images/hari_image30.webp' %}" alt="Hari 30" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">30</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(2)">
+    <img src="{% static 'images/hari_image29.webp' %}" alt="Hari 29" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">29</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(3)">
+    <img src="{% static 'images/hari_image28.webp' %}" alt="Hari 28" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">28</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(4)">
+    <img src="{% static 'images/hari_image27.webp' %}" alt="Hari 27" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">27</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(5)">
+    <img src="{% static 'images/hari_image26.webp' %}" alt="Hari 26" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">26</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(6)">
+    <img src="{% static 'images/hari_image25.webp' %}" alt="Hari 25" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">25</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(7)">
+    <img src="{% static 'images/hari_image24.webp' %}" alt="Hari 24" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">24</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(8)">
+    <img src="{% static 'images/hari_image23.webp' %}" alt="Hari 23" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">23</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(9)">
+    <img src="{% static 'images/hari_image22.webp' %}" alt="Hari 22" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">22</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(10)">
+    <img src="{% static 'images/hari_image21.webp' %}" alt="Hari 21" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">21</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(11)">
+    <img src="{% static 'images/hari_image20.webp' %}" alt="Hari 20" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">20</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(12)">
+    <img src="{% static 'images/hari_image19.webp' %}" alt="Hari 19" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">19</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(13)">
+    <img src="{% static 'images/hari_image18.webp' %}" alt="Hari 18" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">18</span></div>
+  </div>
+  <div class="gl-item" data-cat="fashion" onclick="openLb(14)">
+    <img src="{% static 'images/hari_image17.png' %}" alt="Hari 17" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">17</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(15)">
+    <img src="{% static 'images/hari_image16.png' %}" alt="Hari 16" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">16</span></div>
+  </div>
+  <div class="gl-item" data-cat="fashion" onclick="openLb(16)">
+    <img src="{% static 'images/hari_image15.png' %}" alt="Hari 15" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">15</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(17)">
+    <img src="{% static 'images/hari_image14.png' %}" alt="Hari 14" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">14</span></div>
+  </div>
+  <div class="gl-item" data-cat="fashion" onclick="openLb(18)">
+    <img src="{% static 'images/hari_image13.png' %}" alt="Hari 13" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">13</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(19)">
+    <img src="{% static 'images/hari_image12.png' %}" alt="Hari 12" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">12</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(20)">
+    <img src="{% static 'images/hari_image8.png' %}" alt="Hari 08" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">08</span></div>
+  </div>
+  <div class="gl-item" data-cat="fashion" onclick="openLb(21)">
+    <img src="{% static 'images/hari_image7.png' %}" alt="Hari 07" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">07</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(22)">
+    <img src="{% static 'images/hari_image6.png' %}" alt="Hari 06" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">06</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(23)">
+    <img src="{% static 'images/hari_image5.png' %}" alt="Hari 05" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">05</span></div>
+  </div>
+  <div class="gl-item" data-cat="fashion" onclick="openLb(24)">
+    <img src="{% static 'images/hari_image4.png' %}" alt="Hari 04" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">04</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(25)">
+    <img src="{% static 'images/hari_image3.png' %}" alt="Hari 03" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">03</span></div>
+  </div>
+  <div class="gl-item" data-cat="fashion" onclick="openLb(26)">
+    <img src="{% static 'images/hari_image2.png' %}" alt="Hari 02" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">02</span></div>
+  </div>
+  <div class="gl-item" data-cat="portrait" onclick="openLb(27)">
+    <img src="{% static 'images/hari_image1.png' %}" alt="Hari 01" loading="lazy">
+    <div class="gl-item-overlay"><span class="gl-item-num">01</span></div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="lbBgClose(event)">
+  <button id="lb-close" onclick="closeLb()">닫기 ✕</button>
+  <button id="lb-prev" onclick="lbNav(-1)">&#8249;</button>
+  <img id="lb-img" src="" alt="">
+  <button id="lb-next" onclick="lbNav(1)">&#8250;</button>
+  <div id="lb-info"></div>
+</div>
+
+<!-- FOOTER -->
+<footer class="gl-footer">
+  <div class="gl-footer-copy">© 2026 Hari. All rights reserved.</div>
+  <div class="gl-footer-links">
+    <a href="/">홈으로</a>
+    <a href="/video/">비디오</a>
+    <a href="https://www.youtube.com/@Hari-o5m2r" target="_blank" rel="noopener">YouTube ↗</a>
+  </div>
+</footer>
+
+<script>
+const IMGS = [
+  "{% static 'images/hari_image31.webp' %}",
+  "{% static 'images/hari_image30.webp' %}",
+  "{% static 'images/hari_image29.webp' %}",
+  "{% static 'images/hari_image28.webp' %}",
+  "{% static 'images/hari_image27.webp' %}",
+  "{% static 'images/hari_image26.webp' %}",
+  "{% static 'images/hari_image25.webp' %}",
+  "{% static 'images/hari_image24.webp' %}",
+  "{% static 'images/hari_image23.webp' %}",
+  "{% static 'images/hari_image22.webp' %}",
+  "{% static 'images/hari_image21.webp' %}",
+  "{% static 'images/hari_image20.webp' %}",
+  "{% static 'images/hari_image19.webp' %}",
+  "{% static 'images/hari_image18.webp' %}",
+  "{% static 'images/hari_image17.png' %}",
+  "{% static 'images/hari_image16.png' %}",
+  "{% static 'images/hari_image15.png' %}",
+  "{% static 'images/hari_image14.png' %}",
+  "{% static 'images/hari_image13.png' %}",
+  "{% static 'images/hari_image12.png' %}",
+  "{% static 'images/hari_image8.png' %}",
+  "{% static 'images/hari_image7.png' %}",
+  "{% static 'images/hari_image6.png' %}",
+  "{% static 'images/hari_image5.png' %}",
+  "{% static 'images/hari_image4.png' %}",
+  "{% static 'images/hari_image3.png' %}",
+  "{% static 'images/hari_image2.png' %}",
+  "{% static 'images/hari_image1.png' %}"
+];
+let lbIdx = 0;
+let visibleImgs = IMGS.slice();
+
+function openLb(idx){
+  lbIdx = idx;
+  document.getElementById('lb-img').src = visibleImgs[idx];
+  document.getElementById('lb-info').textContent = (idx+1) + ' / ' + visibleImgs.length;
+  document.getElementById('lightbox').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeLb(){
+  document.getElementById('lightbox').classList.remove('show');
+  document.body.style.overflow = '';
+  setTimeout(()=>{ document.getElementById('lb-img').src=''; }, 300);
+}
+function lbBgClose(e){ if(e.target===document.getElementById('lightbox')) closeLb(); }
+function lbNav(dir){
+  lbIdx = (lbIdx + dir + visibleImgs.length) % visibleImgs.length;
+  document.getElementById('lb-img').src = visibleImgs[lbIdx];
+  document.getElementById('lb-info').textContent = (lbIdx+1) + ' / ' + visibleImgs.length;
+}
+document.addEventListener('keydown', e=>{
+  if(!document.getElementById('lightbox').classList.contains('show')) return;
+  if(e.key==='Escape') closeLb();
+  if(e.key==='ArrowRight') lbNav(1);
+  if(e.key==='ArrowLeft') lbNav(-1);
+});
+
+function filterGallery(cat, btn){
+  document.querySelectorAll('.gl-filter-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  const items = document.querySelectorAll('.gl-item');
+  let count = 0;
+  visibleImgs = [];
+  items.forEach((item, i)=>{
+    const show = cat==='all' || item.dataset.cat===cat;
+    item.style.display = show ? '' : 'none';
+    if(show){ visibleImgs.push(IMGS[i]); count++; }
+  });
+  // re-map onclick indices
+  let vi = 0;
+  items.forEach((item, i)=>{
+    if(item.style.display !== 'none'){
+      const idx = vi++;
+      item.onclick = ()=>openLb(idx);
+    }
+  });
+  document.getElementById('visible-count').textContent = count;
+}
+</script>
+</body>
+</html>

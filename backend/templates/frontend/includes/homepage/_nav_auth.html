@@ -1,0 +1,637 @@
+{% load static %}
+
+<style>
+/* ── NAV GNB 스타일 ── */
+/* 로고 좌 | 링크 중앙 | 액션+인증 우 */
+#nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+}
+.nav-logo {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+.nav-center {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── THEME TOGGLE (iOS 스위치 스타일) ── */
+.theme-toggle-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.8rem;
+  flex-shrink: 0;
+}
+#theme-toggle {
+  position: relative;
+  width: 44px;
+  height: 26px;
+  background: #ddd;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.3s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  padding: 0 2px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+  flex-shrink: 0;
+}
+#theme-toggle::after {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  background: #fff;
+  border-radius: 50%;
+  left: 2px;
+  transition: left 0.3s cubic-bezier(0.45, 0, 0.15, 1),
+              background 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* Light Mode (기본) */
+#theme-toggle.off {
+  background: #e8e8e8;
+}
+#theme-toggle.off::after {
+  left: 2px;
+  background: #fff;
+}
+
+/* Dark Mode */
+#theme-toggle.on {
+  background: #2a2420;
+}
+#theme-toggle.on::after {
+  left: 20px;
+  background: #fff;
+}
+
+/* Hover 효과 */
+#theme-toggle:hover {
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.15),
+              0 0 8px rgba(255,123,138,0.2);
+}
+#theme-toggle.on:hover {
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2),
+              0 0 8px rgba(255,123,138,0.3);
+}
+
+/* 토글 아이콘 */
+.theme-icon {
+  font-size: 0.85rem;
+  opacity: 0.65;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── DARK MODE 네비게이션 색상 ── */
+:root[data-theme="dark"] .nav-logo img {
+  mix-blend-mode: normal !important;
+  filter: brightness(0) invert(1) !important;
+  opacity: 0.9;
+}
+
+:root[data-theme="dark"] .nav-gnb-item {
+  color: #b5aea8;
+}
+:root[data-theme="dark"] .nav-gnb-item:hover {
+  color: #f5f1ed;
+  background: rgba(255,138,155,0.15);
+}
+:root[data-theme="dark"] .nav-gnb-roleplay {
+  background: #3d3530 !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3) !important;
+}
+:root[data-theme="dark"] .nav-gnb-roleplay:hover {
+  background: #504540 !important;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4) !important;
+}
+:root[data-theme="dark"] #auth-btn {
+  color: #f5f1ed;
+  border-color: rgba(255,123,138,0.2);
+}
+:root[data-theme="dark"] #auth-btn:hover {
+  background: #ff8a9b;
+  color: #fff;
+  border-color: #ff8a9b;
+}
+:root[data-theme="dark"] #auth-btn.logged-in {
+  border-color: #1ee0a6;
+  color: #1ee0a6;
+}
+:root[data-theme="dark"] #auth-btn.logged-in:hover {
+  background: #1ee0a6;
+  color: #1a1612;
+}
+.nav-gnb-item {
+  font-family: Pretendard,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  font-size: 0.84rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #6b6460;
+  text-decoration: none;
+  padding: 7px 18px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.18s, background 0.18s;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1;
+  border-radius: 6px;
+}
+.nav-gnb-item:hover {
+  color: var(--ink);
+  background: rgba(255,123,138,0.07);
+}
+/* 하리와 대화하기 — 핑크 채운 pill */
+.nav-gnb-chat {
+  background: var(--acc);
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 20px !important;
+  padding: 8px 20px !important;
+  box-shadow: 0 2px 10px rgba(255,123,138,0.35);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+.nav-gnb-chat:hover {
+  background: #ff5c6e !important;
+  color: #fff !important;
+  box-shadow: 0 4px 16px rgba(255,123,138,0.45);
+  transform: translateY(-1px);
+}
+/* 하리와 롤플레잉 — 다크 채운 pill */
+.nav-gnb-roleplay {
+  background: var(--ink) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 20px !important;
+  padding: 8px 20px !important;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(42,36,32,0.18);
+  transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+}
+.nav-gnb-roleplay:hover {
+  background: #3d3530 !important;
+  color: #fff !important;
+  box-shadow: 0 4px 16px rgba(42,36,32,0.28);
+  transform: translateY(-1px);
+}
+.nav-gnb-soon {
+  font-size: 0.52rem;
+  letter-spacing: 0.04em;
+  background: var(--acc2);
+  color: var(--ink);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+/* 구분선 */
+.nav-gnb-sep {
+  display: inline-block;
+  width: 0.5px;
+  height: 13px;
+  background: var(--bdr2);
+  margin: 0 0.2rem;
+  flex-shrink: 0;
+}
+@media (max-width: 1200px) {
+  .nav-gnb-item { padding: 6px 10px; font-size: 0.8rem; }
+  .nav-gnb-chat, .nav-gnb-roleplay { padding: 7px 13px !important; }
+}
+@media (max-width: 1000px) {
+  .nav-gnb-roleplay,
+  .nav-gnb-sep-roleplay { display: none !important; }
+  .nav-center { gap: 0; }
+}
+@media (max-width: 768px) {
+  #nav { display: flex !important; justify-content: space-between; padding: 0 1rem !important; }
+  .nav-center { display: none !important; }
+  .nav-right .nav-gnb-chat { display: none !important; }
+}
+
+</style>
+
+<nav id="nav">
+  <a class="nav-logo" href="/" aria-label="HARI">
+    <img src="{% static 'images/hari_logo_none.png' %}?v=2" alt="HARI Logo" style="height:48px; width:auto; object-fit:contain; mix-blend-mode:multiply;">
+  </a>
+
+  <!-- 중앙: 페이지 링크 + 액션 버튼 -->
+  <div class="nav-center">
+    {% if user.is_authenticated %}
+    <a href="/hari-chat/" class="nav-gnb-item nav-gnb-chat">💬 하리와 채팅하기</a>
+    {% else %}
+    <a href="#" onclick="openAuth('login'); return false;" class="nav-gnb-item nav-gnb-chat">💬 하리와 채팅하기</a>
+    {% endif %}
+    <span class="nav-gnb-sep"></span>
+    <a href="#s2" class="nav-gnb-item">About Hari</a>
+    <a href="#s3" class="nav-gnb-item">Gallery</a>
+    <a href="#s4" class="nav-gnb-item">Videos</a>
+    <span class="nav-gnb-sep"></span>
+    {% if user.is_authenticated %}
+    <a href="/roleplay/" class="nav-gnb-item nav-gnb-roleplay">🎭 하리와 롤플레잉</a>
+    {% else %}
+    <a href="#" onclick="openAuth('login'); return false;" class="nav-gnb-item nav-gnb-roleplay">🎭 하리와 롤플레잉</a>
+    {% endif %}
+  </div>
+
+  <!-- 우측: 인증 + 유틸 -->
+  <div class="nav-right">
+
+    <!-- 내 정보 (로그인 시) -->
+    {% if user.is_authenticated %}
+    <div class="auth-user-wrap" id="user-menu-wrap">
+      <button id="auth-btn" class="logged-in" onclick="toggleUserMenu()">
+        {{ user.username }} ▾
+      </button>
+      <div class="user-dropdown" id="user-dropdown">
+        <a href="/mypage/">마이페이지</a>
+        <a href="/membership/">멤버십 구독하기</a>
+        <button class="logout-btn" onclick="doLogout()">로그아웃</button>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- 로그인 (비로그인 시) -->
+    {% if not user.is_authenticated %}
+    <button id="auth-btn" onclick="openAuth('login')">로그인</button>
+    {% endif %}
+
+    <!-- 테마 토글 (다크/라이트 모드) -->
+    <div class="theme-toggle-wrap">
+      <span class="theme-icon" title="라이트 모드">☀️</span>
+      <button id="theme-toggle" class="off" onclick="toggleTheme()" aria-label="다크 모드 전환" title="다크/라이트 모드 전환"></button>
+      <span class="theme-icon" title="다크 모드">🌙</span>
+    </div>
+
+    <!-- 햄버거 메뉴 -->
+    <button id="menu-btn" onclick="toggleDrawer()" aria-label="메뉴">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div id="drawer-bd" onclick="closeDrawer()"></div>
+<div id="drawer">
+  <div class="drawer-label">Navigation</div>
+  <ul>
+    <li>
+      <a href="/abouthari/" onclick="closeDrawer()">
+        <span>About Hari</span>
+        <span class="d-num">01</span>
+      </a>
+    </li>
+    <li>
+      <a href="/gallery/" onclick="closeDrawer()">
+        <span>Gallery</span>
+        <span class="d-num">02</span>
+      </a>
+    </li>
+    <li>
+      <a href="/video/" onclick="closeDrawer()">
+        <span>Videos</span>
+        <span class="d-num">03</span>
+      </a>
+    </li>
+    <li>
+      <a href="/mypage/" onclick="closeDrawer()">
+        <span>마이페이지</span>
+        <span class="d-num">04</span>
+      </a>
+    </li>
+    <li>
+      <a href="/membership/" onclick="closeDrawer()">
+        <span>멤버십 구독하기</span>
+        <span class="d-num">05</span>
+      </a>
+    </li>
+    <li>
+      <a href="https://linktr.ee/chatting_hari" target="_blank" rel="noopener" onclick="closeDrawer()">
+        <span>모든 링크 모음</span>
+        <span class="d-num" style="font-size:0.6rem;letter-spacing:0.08em;">Linktree ↗</span>
+      </a>
+    </li>
+  </ul>
+
+  <!-- 채팅 / 롤플레잉 버튼 -->
+  <div style="display:flex;flex-direction:column;gap:.5rem;margin:1.2rem 0;">
+    {% if user.is_authenticated %}
+    <a href="/hari-chat/" onclick="closeDrawer()" style="display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem;background:var(--acc);color:#fff;text-decoration:none;border-radius:10px;font-family:Pretendard,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;font-size:.92rem;font-weight:600;-webkit-font-smoothing:antialiased;">
+      <span>💬 하리와 채팅하기</span><span style="font-size:.8rem;">→</span>
+    </a>
+    <a href="/roleplay/" onclick="closeDrawer()" style="display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem;background:#2a2420;color:#fff;text-decoration:none;border-radius:10px;font-family:Pretendard,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;font-size:.92rem;font-weight:600;-webkit-font-smoothing:antialiased;box-shadow:0 2px 10px rgba(42,36,32,0.18);transition:background .2s, box-shadow .2s, transform .15s;" onmouseover="this.style.background='#3d3530'; this.style.boxShadow='0 4px 16px rgba(42,36,32,0.28)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='#2a2420'; this.style.boxShadow='0 2px 10px rgba(42,36,32,0.18)'; this.style.transform='translateY(0)';">
+      <span>🎭 하리와 롤플레잉</span><span style="font-size:.8rem;">→</span>
+    </a>
+    {% else %}
+    <a href="#" onclick="closeDrawer(); openAuth('login');" style="display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem;background:var(--acc);color:#fff;text-decoration:none;border-radius:10px;font-family:Pretendard,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;font-size:.92rem;font-weight:600;-webkit-font-smoothing:antialiased;">
+      <span>💬 하리와 채팅하기</span><span style="font-size:.8rem;">→</span>
+    </a>
+    <a href="#" onclick="closeDrawer(); openAuth('login');" style="display:flex;align-items:center;justify-content:space-between;padding:.85rem 1rem;background:#2a2420;color:#fff;text-decoration:none;border-radius:10px;font-family:Pretendard,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;font-size:.92rem;font-weight:600;-webkit-font-smoothing:antialiased;box-shadow:0 2px 10px rgba(42,36,32,0.18);transition:background .2s, box-shadow .2s, transform .15s;" onmouseover="this.style.background='#3d3530'; this.style.boxShadow='0 4px 16px rgba(42,36,32,0.28)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='#2a2420'; this.style.boxShadow='0 2px 10px rgba(42,36,32,0.18)'; this.style.transform='translateY(0)';">
+      <span>🎭 하리와 롤플레잉</span><span style="font-size:.8rem;">→</span>
+    </a>
+    {% endif %}
+  </div>
+
+  <div class="drawer-sub-cta">
+    {% if user.is_authenticated %}
+    <div style="font-family:Pretendard,'Apple SD Gothic Neo','Noto Sans KR',sans-serif; font-size:0.52rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--dim); padding:0.3rem 0; margin-bottom:0.4rem;">
+      {{ user.username }} 님
+    </div>
+    <button onclick="doLogout()" style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:.7rem .9rem;background:transparent;border:0.5px solid rgba(255,123,138,0.3);color:var(--acc);font-family:Pretendard,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .2s;" onmouseover="this.style.background='rgba(255,123,138,0.08)'" onmouseout="this.style.background='transparent'">
+      <span>로그아웃</span><span>→</span>
+    </button>
+    {% else %}
+    <button onclick="closeDrawer(); openAuth('login');" style="display:flex;align-items:center;justify-content:space-between;width:100%;padding:.7rem .9rem;background:var(--acc);color:#fff;font-family:Pretendard,'Apple SD Gothic Neo','Noto Sans KR',sans-serif;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;border:none;transition:background .2s;" onmouseover="this.style.background='#ff4c6c'" onmouseout="this.style.background='var(--acc)'">
+      <span>로그인 / 회원가입</span><span>→</span>
+    </button>
+    {% endif %}
+  </div>
+</div>
+
+<!-- ── AUTH MODAL ── -->
+<div id="auth-overlay" onclick="overlayClose(event)">
+  <div id="auth-modal">
+    <button class="auth-close" onclick="closeAuth()">✕</button>
+
+    <!-- Tabs -->
+    <div class="auth-tabs">
+      <button class="auth-tab on" id="tab-login"  onclick="switchTab('login')">로그인</button>
+      <button class="auth-tab"    id="tab-signup" onclick="switchTab('signup')">회원가입</button>
+      <button class="auth-tab"    id="tab-forgot" onclick="switchTab('forgot')" style="display:none">비밀번호 찾기</button>
+    </div>
+
+    <!-- ── LOGIN ── -->
+    <div class="auth-panel on" id="panel-login">
+      <div class="auth-title">Welcome Back</div>
+      <p class="auth-sub">하리 팬클럽에 다시 오셨군요 ✨</p>
+
+      <div class="social-row">
+        <button class="social-btn" onclick="socialLogin('google')">
+          <svg viewBox="0 0 24 24" width="16" height="16"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Google로 계속하기
+        </button>
+        <button class="social-btn naver-btn" onclick="socialLogin('naver')">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M16.27 12.96L7.4 0H0v24h7.73V11.04L16.6 24H24V0h-7.73z"/></svg>
+          네이버로 계속하기
+        </button>
+      </div>
+
+      <div class="auth-divider">또는 이메일로</div>
+
+      <div class="auth-field">
+        <label class="auth-label" for="loginEmail">이메일</label>
+        <input class="auth-inp" id="loginEmail" name="loginEmail" type="email" placeholder="hello@hari.kr" autocomplete="off">
+      </div>
+      <div class="auth-field">
+        <label class="auth-label" for="login-pw">비밀번호</label>
+        <div class="pw-wrap">
+          <input class="auth-inp" id="login-pw" name="login-pw" type="password" placeholder="••••••••" autocomplete="new-password">
+          <button class="pw-toggle" type="button" onclick="togglePw('login-pw',this)">표시</button>
+        </div>
+      </div>
+
+      <button class="auth-forgot" onclick="switchTab('forgot')">비밀번호를 잊으셨나요?</button>
+      <button class="auth-submit" onclick="doLogin()">로그인 →</button>
+      <div class="auth-switch">아직 계정이 없으신가요? <button onclick="switchTab('signup')">회원가입</button></div>
+    </div>
+
+    <!-- ── SIGNUP ── -->
+    <div class="auth-panel" id="panel-signup">
+      <div class="auth-title">Join Hari</div>
+      <p class="auth-sub">하리 팬클럽에 합류하세요 🌸</p>
+
+      <div class="social-row">
+        <button class="social-btn" onclick="socialLogin('google')">
+          <svg viewBox="0 0 24 24" width="16" height="16"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Google로 계속하기
+        </button>
+        <button class="social-btn naver-btn" onclick="socialLogin('naver')">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M16.27 12.96L7.4 0H0v24h7.73V11.04L16.6 24H24V0h-7.73z"/></svg>
+          네이버로 계속하기
+        </button>
+      </div>
+
+      <div class="auth-divider">또는 이메일로</div>
+
+      <div class="auth-inp-row">
+        <div class="auth-field">
+          <label class="auth-label" for="signupName">이름</label>
+          <input class="auth-inp" id="signupName" name="signupName" type="text" placeholder="홍길동">
+        </div>
+        <div class="auth-field">
+          <label class="auth-label" for="signupNick">닉네임</label>
+          <input class="auth-inp" id="signupNick" name="signupNick" type="text" placeholder="bori_fan">
+        </div>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label" for="signupEmail">이메일</label>
+        <div style="position:relative; display:flex; align-items:center; gap:0.5rem;">
+          <input class="auth-inp" id="signupEmail" name="signupEmail" type="email" placeholder="hello@hari.kr" style="flex:1;" oninput="debounceEmailCheck(this.value)">
+          <span id="email-status" style="font-size:1rem; flex-shrink:0; line-height:1;"></span>
+        </div>
+        <div id="email-message" class="auth-field-msg"></div>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label" for="signup-pw">비밀번호</label>
+        <div style="position:relative; display:flex; align-items:center; gap:0.5rem;">
+          <div class="pw-wrap" style="flex:1;">
+            <input class="auth-inp" id="signup-pw" name="signup-pw" type="password" placeholder="8자 이상" oninput="debouncePasswordCheck(this.value)">
+            <button class="pw-toggle" type="button" onclick="togglePw('signup-pw',this)">표시</button>
+          </div>
+          <span id="password-status" style="font-size:1rem; flex-shrink:0; line-height:1;"></span>
+        </div>
+        <div id="password-message" class="auth-field-msg"></div>
+        <div id="pw-strength-wrap" class="pw-strength-wrap" style="display:none;">
+          <div id="pw-strength-bar" class="pw-strength-bar"></div>
+        </div>
+        <div id="pw-criteria" class="pw-criteria" style="display:none;">
+          <div class="pw-rule" id="rule-len"><span class="pw-rule-dot"></span>8자 이상</div>
+          <div class="pw-rule" id="rule-eng"><span class="pw-rule-dot"></span>영문 포함</div>
+          <div class="pw-rule" id="rule-num"><span class="pw-rule-dot"></span>숫자 포함</div>
+        </div>
+      </div>
+
+      <label class="auth-check" for="signup-terms">
+        <input type="checkbox" id="signup-terms" name="signup-terms" required>
+        <span><button type="button" onclick="openTermsModal('terms')" style="background:none; border:none; border-bottom:0.5px solid var(--acc); color:var(--acc); cursor:pointer; padding:0; font-family:inherit; font-size:inherit;">이용약관</button> 및 <button type="button" onclick="openTermsModal('privacy')" style="background:none; border:none; border-bottom:0.5px solid var(--acc); color:var(--acc); cursor:pointer; padding:0; font-family:inherit; font-size:inherit;">개인정보처리방침</button>에 동의합니다. <span class="auth-required-badge">필수</span></span>
+      </label>
+
+      <button class="auth-submit" onclick="doSignup()">가입하기 →</button>
+      <div class="auth-switch">이미 계정이 있으신가요? <button onclick="switchTab('login')">로그인</button></div>
+    </div>
+
+    <!-- ── FORGOT ── -->
+    <div class="auth-panel" id="panel-forgot">
+      <div class="auth-title">비밀번호 찾기</div>
+      <p class="auth-sub">가입한 이메일 주소를 입력하시면<br>재설정 링크를 보내드려요.</p>
+
+      <div class="auth-field">
+        <label class="auth-label" for="forgotEmail">이메일</label>
+        <input class="auth-inp" id="forgotEmail" name="forgotEmail" type="email" placeholder="hello@hari.kr">
+      </div>
+
+      <button class="auth-submit" onclick="doForgot()">재설정 링크 보내기 →</button>
+      <div class="auth-switch"><button onclick="switchTab('login')">← 로그인으로 돌아가기</button></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 이용약관 모달 -->
+<div id="terms-modal-overlay" onclick="closeTermsModal(event)" style="position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:9500; display:none; align-items:center; justify-content:center;">
+  <div id="terms-modal-box" style="background:#fff; width:min(650px,90vw); max-height:85vh; display:flex; flex-direction:column; border-radius:8px; overflow:hidden;">
+    <div style="display:flex; align-items:center; justify-content:space-between; padding:1.2rem 1.5rem; border-bottom:0.5px solid rgba(255,123,138,0.22);">
+      <h2 id="terms-modal-title" style="font-family:'Jua',sans-serif; font-size:1.2rem; color:#2a2420; margin:0;"></h2>
+      <button onclick="closeTermsModal()" style="background:none; border:none; cursor:pointer; font-size:1.4rem; color:#9e9490; line-height:1;">✕</button>
+    </div>
+    <div id="terms-modal-content" style="padding:1.5rem; overflow-y:auto; font-family:'Jua',sans-serif; font-size:0.9rem; color:#444; line-height:2;">
+      <!-- 내용은 JS로 동적 로드 -->
+    </div>
+  </div>
+</div>
+
+<script>
+// ── 인증 모달 함수 (모든 페이지에서 사용) ──
+if (typeof openAuth === 'undefined') {
+  window.openAuth = function(tab) {
+    const overlay = document.getElementById('auth-overlay');
+    if (overlay) {
+      overlay.classList.add('show');
+      document.body.style.overflow = 'hidden';
+      if (typeof switchTab === 'function') switchTab(tab || 'login');
+    }
+  };
+}
+
+if (typeof closeAuth === 'undefined') {
+  window.closeAuth = function() {
+    const overlay = document.getElementById('auth-overlay');
+    if (overlay) {
+      overlay.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+  };
+}
+
+if (typeof overlayClose === 'undefined') {
+  window.overlayClose = function(e) {
+    if (e.target === document.getElementById('auth-overlay')) {
+      closeAuth();
+    }
+  };
+}
+
+if (typeof switchTab === 'undefined') {
+  window.switchTab = function(t) {
+    const tabMap = { login: 'login', signup: 'signup', forgot: 'forgot' };
+    const tab = tabMap[t] || 'login';
+    document.querySelectorAll('.auth-tab').forEach(el => el.classList.remove('on'));
+    document.querySelectorAll('.auth-panel').forEach(el => el.classList.remove('on'));
+    const tabEl = document.getElementById('tab-' + tab);
+    const panelEl = document.getElementById('panel-' + tab);
+    if (tabEl) tabEl.classList.add('on');
+    if (panelEl) panelEl.classList.add('on');
+    if (tab !== 'signup') {
+      ['email-status','email-message','password-status','password-message'].forEach(id=>{
+        const el=document.getElementById(id); if(el) el.textContent='';
+      });
+      const cr=document.getElementById('pw-criteria'); if(cr) cr.style.display='none';
+      const sw=document.getElementById('pw-strength-wrap'); if(sw) sw.style.display='none';
+      const bar=document.getElementById('pw-strength-bar'); if(bar){ bar.style.width='0'; }
+      ['rule-len','rule-eng','rule-num'].forEach(id=>{
+        const el=document.getElementById(id); if(el) el.className='pw-rule';
+      });
+    }
+  };
+}
+
+if (typeof toggleUserMenu === 'undefined') {
+  window.toggleUserMenu = function() {
+    const dropdown = document.getElementById('user-dropdown');
+    if (dropdown) {
+      dropdown.classList.toggle('show');
+    }
+  };
+}
+
+if (typeof openTermsModal === 'undefined') {
+  window.openTermsModal = function(type) {
+    const overlay = document.getElementById('terms-modal-overlay');
+    const title = document.getElementById('terms-modal-title');
+    const content = document.getElementById('terms-modal-content');
+
+    if (type === 'terms') {
+      if (title) title.textContent = '이용약관';
+      if (content) {
+        content.innerHTML = `
+          <div style="font-size:0.9rem; line-height:2;">
+            <h3 style="font-weight:600; margin:1.2rem 0 0.6rem;">제1조 (목적)</h3>
+            <p>본 약관은 하리 팬클럽 서비스 이용 약관입니다.</p>
+            <h3 style="font-weight:600; margin:1.2rem 0 0.6rem;">제2조 (이용약관의 효력)</h3>
+            <p>본 약관은 사용자가 회원가입을 완료할 때부터 효력이 발생합니다.</p>
+          </div>
+        `;
+      }
+    } else if (type === 'privacy') {
+      if (title) title.textContent = '개인정보처리방침';
+      if (content) {
+        content.innerHTML = `
+          <div style="font-size:0.9rem; line-height:2;">
+            <h3 style="font-weight:600; margin:1.2rem 0 0.6rem;">1. 개인정보의 수집 및 이용 목적</h3>
+            <p>하리 서비스 제공을 위해 개인정보를 수집합니다.</p>
+            <h3 style="font-weight:600; margin:1.2rem 0 0.6rem;">2. 수집하는 개인정보의 항목</h3>
+            <p>이름, 이메일, 닉네임 등을 수집합니다.</p>
+          </div>
+        `;
+      }
+    }
+
+    if (overlay) {
+      overlay.style.display = 'flex';
+    }
+  };
+}
+
+if (typeof closeTermsModal === 'undefined') {
+  window.closeTermsModal = function(e) {
+    if (e && e.target !== document.getElementById('terms-modal-overlay')) return;
+    const overlay = document.getElementById('terms-modal-overlay');
+    if (overlay) {
+      overlay.style.display = 'none';
+    }
+  };
+}
+</script>
+
+<div id="ticker">
+  <div class="ticker-track">
+    <span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span><span><em>✦</em></span>
+  </div>
+</div>
+

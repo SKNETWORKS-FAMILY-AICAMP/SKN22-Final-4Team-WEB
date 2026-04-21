@@ -1,0 +1,1964 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>하리와의 대화</title>
+<link rel="icon" type="image/png" href="{% static 'images/hari_favicon.png' %}?v=2">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2001@1.1/NeoDunggeunmo.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_eight@1.0/DOSSaemmul.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.min.css">
+<script src="{% static 'js/theme.js' %}"></script>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --f-pixel: 'DOSSaemmul', sans-serif;
+  --f-neo: 'NeoDunggeunmo', sans-serif;
+  /* 하리 브랜드 컬러 */
+  --hari-pink: #ff7b8a;
+  --hari-mint: #06d6a0;
+  --hari-pink-light: #ffb3be;
+  --hari-mint-light: #8ef5d7;
+  --hari-coral: #ff9aa2;
+  --hari-sky: #c7ceea;
+  
+  /* 배경 */
+  --bg-main: #FFF5F7;
+  --bg-gradient: #FFF5F7;
+  --bg-pattern: none;
+  
+  /* 말풍선 */
+  --bubble-hari: linear-gradient(135deg, #ffffff 0%, #fff5f7 100%);
+  --bubble-me: linear-gradient(135deg, var(--hari-pink) 0%, var(--hari-coral) 100%);
+  --bubble-shadow: 0 2px 8px rgba(255, 123, 138, 0.15);
+  
+  /* 텍스트 */
+  --text-main: #2a2420;
+  --text-dim: #9e9490;
+  --text-time: #c5b8b5;
+  
+  /* 헤더 */
+  --header-bg: rgba(255, 255, 255, 0.95);
+  --border: rgba(255, 123, 138, 0.1);
+}
+
+/* 다크 모드 */
+html[data-theme="dark"] {
+  --bg-main: rgba(55, 35, 50, 0.88);
+  --bg-gradient: rgba(55, 35, 50, 0.88);
+  --bubble-hari: linear-gradient(135deg, #7a5a6a 0%, #5a3a5a 100%);
+  --bubble-me: linear-gradient(135deg, #ff8a9b 0%, #ffaa88 100%);
+  --bubble-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  --text-main: #fff9f7;
+  --text-dim: #e0c8d0;
+  --text-time: #d0b8c5;
+  --header-bg: rgba(55, 35, 50, 0.98);
+  --border: rgba(255, 138, 155, 0.25);
+}
+
+/* 다크 모드 추가 스타일 */
+html[data-theme="dark"] .sidebar-left {
+  border-right-color: rgba(255, 138, 155, 0.2);
+}
+
+html[data-theme="dark"] .sidebar-left::after {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.4) 60%, rgba(55, 35, 50, 0.95) 100%) !important;
+}
+
+html[data-theme="dark"] .chat-container {
+  background: rgba(55, 35, 50, 0.75) !important;
+}
+
+html[data-theme="dark"] .header {
+  background: rgba(55, 35, 50, 0.75) !important;
+  backdrop-filter: blur(8px);
+}
+
+html[data-theme="dark"] .input-area {
+  background: rgba(60, 40, 55, 0.8) !important;
+}
+
+html[data-theme="dark"] #messageInput {
+  background: transparent !important;
+  color: #2a2420 !important;
+}
+
+html[data-theme="dark"] #messageInput::placeholder {
+  color: #999999 !important;
+}
+
+html[data-theme="dark"] .input-button {
+  color: #ff8a9b;
+}
+
+html[data-theme="dark"] .search-input-wrapper {
+  background: #ffffff !important;
+}
+
+html[data-theme="dark"] .search-input-wrapper:focus-within {
+  background: #ffffff !important;
+  border-color: var(--hari-pink) !important;
+}
+
+html[data-theme="dark"] .back-btn {
+  color: #b5aea8;
+}
+
+html[data-theme="dark"] .back-btn:hover {
+  color: #f5f1ed;
+}
+
+html, body {
+  height: 100vh;
+  height: 100dvh;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  overflow-x: hidden;
+  font-family: 'Pretendard Variable', Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: var(--bg-main);
+  max-width: 100vw;
+}
+
+.app-container {
+  display: flex;
+  height: 100vh;
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════
+   SIDEBAR LEFT (Profile)
+   ═══════════════════════════════════════ */
+.sidebar-left {
+  width: 320px;
+  background-size: cover;
+  background-position: center;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  z-index: 10;
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar-left::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.8) 60%, white 100%);
+  z-index: 1;
+}
+
+.profile-section {
+  position: relative;
+  z-index: 2;
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* ═══════════════════════════════════════
+   CHAT MAIN (Center)
+   ═══════════════════════════════════════ */
+.chat-main {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-gradient);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════
+   HEADER (하리 스타일)
+   ═══════════════════════════════════════ */
+.header {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(30px);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: var(--text-main);
+  font-size: 24px;
+  font-weight: 300;
+  transition: transform 0.2s;
+}
+
+.back-btn:hover {
+  transform: translateX(-4px);
+}
+
+.header-profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.profile-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--hari-pink), var(--hari-mint));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.05em;
+  box-shadow: 0 4px 12px rgba(255, 123, 138, 0.3);
+  position: relative;
+}
+
+.profile-img::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 12px;
+  height: 12px;
+  background: var(--hari-mint);
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(6, 214, 160, 0.2);
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-name {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+}
+
+.profile-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--hari-mint);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--hari-mint);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.8); }
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-btn {
+  background: none;
+  border: 0.5px solid var(--border);
+  padding: 8px 12px;
+  cursor: pointer;
+  color: var(--text-dim);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 8px;
+  transition: all 0.2s;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.header-btn:hover {
+  border-color: var(--hari-pink);
+  color: var(--hari-pink);
+  background: rgba(255, 123, 138, 0.05);
+}
+
+/* ── THEME TOGGLE (iOS 스위치 스타일) ── */
+.chat-theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem;
+  flex-shrink: 0;
+}
+
+#chat-theme-toggle {
+  position: relative;
+  width: 44px;
+  height: 26px;
+  background: #ddd;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.3s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  padding: 0 2px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+  flex-shrink: 0;
+}
+
+#chat-theme-toggle::after {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  background: #fff;
+  border-radius: 50%;
+  left: 2px;
+  transition: left 0.3s cubic-bezier(0.45, 0, 0.15, 1),
+              background 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+#chat-theme-toggle.off {
+  background: #e8e8e8;
+}
+
+#chat-theme-toggle.off::after {
+  left: 2px;
+  background: #fff;
+}
+
+#chat-theme-toggle.on {
+  background: #2a2420;
+}
+
+#chat-theme-toggle.on::after {
+  left: 20px;
+  background: #fff;
+}
+
+#chat-theme-toggle:hover {
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.15),
+              0 0 8px rgba(255,123,138,0.2);
+}
+
+#chat-theme-toggle.on:hover {
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2),
+              0 0 8px rgba(255,123,138,0.3);
+}
+
+.chat-theme-icon {
+  font-size: 0.85rem;
+  opacity: 0.65;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════
+   SEARCH MODAL
+   ═══════════════════════════════════════ */
+.search-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(42, 36, 32, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: none;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 80px;
+}
+
+.search-modal.show {
+  display: flex;
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.search-container {
+  background: white;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(255, 123, 138, 0.3);
+  animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.search-header {
+  padding: 20px 24px;
+  border-bottom: 0.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-input-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #ffffff;
+  border: 0.5px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 16px;
+}
+
+.search-input-wrapper:focus-within {
+  border-color: var(--hari-pink);
+  background: white;
+}
+
+.search-icon {
+  color: var(--text-dim);
+  font-size: 18px;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  font-family: inherit;
+  background: transparent;
+  color: var(--text-main);
+}
+
+.search-input::placeholder {
+  color: var(--text-dim);
+}
+
+.search-close {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s;
+}
+
+.search-close:hover {
+  color: var(--text-main);
+}
+
+.search-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 16px 24px 0;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.search-tab {
+  background: none;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-dim);
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.search-tab.active {
+  color: var(--hari-pink);
+  border-bottom-color: var(--hari-pink);
+}
+
+.search-results {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+}
+
+.search-results::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+  background: var(--hari-pink);
+  border-radius: 3px;
+}
+
+.search-result-item {
+  padding: 16px;
+  border: 0.5px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.search-result-item:hover {
+  border-color: var(--hari-pink);
+  background: rgba(255, 123, 138, 0.03);
+  transform: translateX(4px);
+}
+
+.search-result-date {
+  font-size: 11px;
+  color: var(--text-time);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.search-result-preview {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.search-result-preview mark {
+  background: rgba(255, 123, 138, 0.2);
+  color: var(--hari-pink);
+  font-weight: 500;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.search-result-sender {
+  font-size: 12px;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+.search-no-results {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-dim);
+}
+
+.search-no-results-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.3;
+}
+
+.search-no-results-text {
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* 날짜 필터 */
+.date-filter {
+  padding: 16px 24px;
+  border-bottom: 0.5px solid var(--border);
+  display: none;
+}
+
+.date-filter.show {
+  display: block;
+}
+
+.date-filter-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.date-filter-label {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  min-width: 60px;
+}
+
+.date-input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 0.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text-main);
+  background: var(--header-bg);
+  transition: border-color 0.2s;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: var(--hari-pink);
+}
+
+.date-filter-btn {
+  padding: 8px 16px;
+  background: var(--hari-pink);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.date-filter-btn:hover {
+  background: var(--hari-coral);
+  transform: translateY(-1px);
+}
+
+/* ═══════════════════════════════════════
+   CHAT MESSAGES AREA
+   ═══════════════════════════════════════ */
+.chat-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  background: var(--bg-gradient);
+  background-attachment: fixed;
+  position: relative;
+}
+
+.chat-container::after {
+  display: none;
+}
+
+.chat-container::before {
+  display: none;
+}
+
+.chat-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+  background: var(--hari-pink);
+  border-radius: 4px;
+  opacity: 0.5;
+}
+
+.chat-container::-webkit-scrollbar-thumb:hover {
+  background: var(--hari-coral);
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+.scroll-to-bottom-btn {
+  position: sticky;
+  bottom: 16px;
+  float: right;
+  margin-right: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--hari-pink);
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  z-index: 10;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.scroll-to-bottom-btn:hover {
+  background: var(--hari-coral);
+  transform: scale(1.1);
+}
+
+.scroll-to-bottom-btn.visible {
+  display: flex;
+}
+
+/* 날짜 구분선 */
+.date-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 24px 0;
+  gap: 16px;
+}
+
+.date-divider::before,
+.date-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border), transparent);
+}
+
+.date-divider-text {
+  background: white;
+  color: var(--text-dim);
+  padding: 6px 20px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: 'DM Mono', monospace;
+  border: 0.5px solid var(--border);
+  box-shadow: 0 2px 8px rgba(255, 123, 138, 0.08);
+}
+
+html[data-theme="dark"] .date-divider-text {
+  background: rgba(90, 82, 72, 0.8);
+  color: #fff9f7;
+  border-color: rgba(255, 138, 155, 0.35);
+}
+
+/* 메시지 그룹 */
+.message-group {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+  align-items: flex-end;
+  animation: msgFadeIn 0.3s ease-out;
+}
+
+/* 연속 말풍선: 같은 사람이 이어질 때 간격 좁힘 */
+.message-group.continued {
+  margin-bottom: 3px;
+}
+.message-group.continued + .message-group.continued,
+.message-group.continued + .message-group {
+  margin-top: 0;
+}
+
+@keyframes msgFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.message-group.me {
+  flex-direction: row-reverse;
+}
+
+.message-group.no-animate {
+  animation: none;
+}
+
+/* 프로필 이미지 */
+.msg-profile {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--hari-pink), var(--hari-mint));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(255, 123, 138, 0.25);
+  letter-spacing: 0.05em;
+}
+
+.message-group.me .msg-profile {
+  display: none;
+}
+
+/* 메시지 컨텐츠 */
+.msg-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 72%;
+}
+
+.message-group.me .msg-content {
+  align-items: flex-end;
+}
+
+/* 이름 */
+.msg-name {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-weight: 500;
+  padding: 0 4px;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.05em;
+}
+
+.message-group.me .msg-name {
+  display: none;
+}
+
+/* 말풍선 + 시간 + 읽음 */
+.msg-bubble-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.message-group.me .msg-bubble-row {
+  flex-direction: row-reverse;
+}
+
+/* 말풍선 공통 스타일 */
+.msg-bubble {
+  padding: 10px 16px;
+  border-radius: 20px;
+  font-size: 0.97rem;
+  font-family: 'Pretendard Variable', Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  line-height: 1.65;
+  letter-spacing: -0.02em;
+  position: relative;
+  box-shadow: var(--bubble-shadow);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  word-break: keep-all;
+  line-break: strict;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* 하리 말풍선 */
+.message-group.other .msg-bubble {
+  background: var(--bubble-hari);
+  color: var(--text-main);
+  border: 0.5px solid rgba(255, 123, 138, 0.1);
+  font-weight: 600;
+}
+
+/* 내 말풍선 */
+.message-group.me .msg-bubble {
+  background: var(--bubble-me);
+  color: white;
+  border: none;
+  font-weight: 400;
+}
+
+/* 연속 말풍선 모서리 그룹 (카카오톡 스타일) */
+/* 하리(other) 연속 */
+.message-group.other.bubble-mid .msg-bubble,
+.message-group.other.bubble-last .msg-bubble {
+  border-top-left-radius: 6px;
+}
+.message-group.other.bubble-first .msg-bubble,
+.message-group.other.bubble-mid .msg-bubble {
+  border-bottom-left-radius: 6px;
+}
+/* 내(me) 연속 */
+.message-group.me.bubble-mid .msg-bubble,
+.message-group.me.bubble-last .msg-bubble {
+  border-top-right-radius: 6px;
+}
+.message-group.me.bubble-first .msg-bubble,
+.message-group.me.bubble-mid .msg-bubble {
+  border-bottom-right-radius: 6px;
+}
+
+
+/* 시간 + 읽음 */
+.msg-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  align-self: flex-end;
+  margin-bottom: 4px;
+}
+
+.message-group.me .msg-meta {
+  align-items: flex-start;
+}
+
+.msg-time {
+  font-size: 11px;
+  color: var(--text-time);
+  white-space: nowrap;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.03em;
+}
+
+.msg-read {
+  font-size: 10px;
+  color: var(--hari-pink);
+  font-weight: 600;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.05em;
+}
+
+/* 타이핑 인디케이터 */
+.typing-indicator {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.typing-bubble {
+  background: white;
+  padding: 14px 20px;
+  border-radius: 20px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  position: relative;
+  box-shadow: var(--bubble-shadow);
+  border: 0.5px solid rgba(255, 123, 138, 0.1);
+}
+
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--hari-pink);
+  animation: typing 1.4s infinite;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-8px);
+    opacity: 1;
+  }
+}
+
+/* ═══════════════════════════════════════
+   QUICK REPLIES (하리 스타일)
+   ═══════════════════════════════════════ */
+.quick-replies {
+  display: flex;
+  gap: 10px;
+  padding: 16px 24px;
+  overflow-x: auto;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border-top: 0.5px solid var(--border);
+  flex-shrink: 0;
+}
+
+.quick-replies::-webkit-scrollbar {
+  height: 4px;
+}
+
+.quick-replies::-webkit-scrollbar-thumb {
+  background: var(--hari-pink);
+  border-radius: 2px;
+}
+
+.quick-reply-btn {
+  background: white;
+  border: 0.5px solid var(--border);
+  padding: 10px 18px;
+  border-radius: 20px;
+  font-size: 14px;
+  color: var(--text-main);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 6px rgba(255, 123, 138, 0.08);
+  font-weight: 400;
+}
+
+.quick-reply-btn:hover {
+  background: var(--hari-pink);
+  color: white;
+  border-color: var(--hari-pink);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 123, 138, 0.25);
+}
+
+/* ═══════════════════════════════════════
+   INPUT AREA (하리 스타일)
+   ═══════════════════════════════════════ */
+.input-area {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 0.5px solid var(--border);
+  padding: 16px 24px;
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-shrink: 0;
+  box-shadow: 0 -2px 12px rgba(255, 123, 138, 0.08);
+}
+
+.input-left {
+  display: flex;
+  gap: 8px;
+}
+
+.input-btn {
+  width: 40px;
+  height: 40px;
+  border: 0.5px solid var(--border);
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: var(--text-dim);
+  transition: all 0.2s;
+  flex-shrink: 0;
+  border-radius: 12px;
+}
+
+.input-btn:hover {
+  border-color: var(--hari-pink);
+  color: var(--hari-pink);
+  background: rgba(255, 123, 138, 0.05);
+}
+
+.input-wrapper {
+  flex: 1;
+  background: white;
+  border: 0.5px solid var(--border);
+  border-radius: 24px;
+  display: flex;
+  align-items: flex-end;
+  padding: 10px 20px;
+  max-height: 120px;
+  box-shadow: 0 2px 8px rgba(255, 123, 138, 0.08);
+  transition: all 0.2s;
+}
+
+.input-wrapper:focus-within {
+  border-color: var(--hari-pink);
+  box-shadow: 0 4px 16px rgba(255, 123, 138, 0.15);
+}
+
+.input-field {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 15px;
+  resize: none;
+  min-height: 24px;
+  max-height: 100px;
+  line-height: 1.6;
+  overflow-y: auto;
+  color: var(--text-main);
+}
+
+.input-field::placeholder {
+  color: var(--text-dim);
+}
+
+.input-field::-webkit-scrollbar {
+  width: 4px;
+}
+
+.input-field::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+.send-btn {
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: linear-gradient(135deg, var(--hari-pink), var(--hari-coral));
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 20px;
+  box-shadow: 0 4px 12px rgba(255, 123, 138, 0.3);
+}
+
+.send-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(255, 123, 138, 0.4);
+}
+
+.send-btn:active {
+  transform: scale(0.95);
+}
+
+.send-btn:disabled {
+  background: var(--border);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ═══════════════════════════════════════
+   CONTAINER QUERIES — chat-main 기준
+   ═══════════════════════════════════════ */
+.chat-main { container-type: inline-size; container-name: chat-main; }
+
+/* chat-main 너비 600px 이하: 버블 넓게 */
+@container chat-main (max-width: 600px) {
+  .msg-content { max-width: 90%; }
+  .chat-container { padding: 10px 12px; }
+}
+/* chat-main 너비 400px 이하: 모바일 밀집 */
+@container chat-main (max-width: 400px) {
+  .msg-bubble { font-size: max(0.88rem, 14px); padding: 9px 13px; }
+  .input-area { padding: 6px 10px; }
+}
+
+/* ═══════════════════════════════════════
+   MEDIA QUERIES
+   ═══════════════════════════════════════ */
+/* 1024px: 레이아웃 풀너비 */
+@media (max-width: 1024px) {
+  .app-container { width: 100%; }
+  .sidebar-left { width: 260px; }
+}
+/* 768px: 태블릿 — 좌측 사이드바 숨김 */
+@media (max-width: 768px) {
+  .sidebar-left { display: none; }
+  .chat-main { width: 100%; }
+  .header { padding: 12px 16px; }
+  .quick-replies { padding: 8px 12px; }
+}
+/* 480px: 모바일 */
+@media (max-width: 480px) {
+  .header { padding: 10px 14px; }
+  .header-profile .profile-name { font-size: 0.9rem; }
+  .input-area { padding: 6px 10px; }
+  .quick-reply-btn { font-size: 0.72rem; padding: 6px 12px; }
+  .messages-container { padding: 12px 10px; }
+}
+/* 360px: 초소형 모바일 */
+@media (max-width: 360px) {
+  .header { padding: 8px 10px; }
+  .header-profile .profile-name { font-size: 0.8rem; }
+  .input-area { padding: 4px 8px; }
+  .chat-input { font-size: 0.82rem; }
+  .send-btn { width: 36px; height: 36px; }
+  .quick-reply-btn { font-size: 0.66rem; padding: 5px 9px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- LEFT SIDEBAR: PROFILE -->
+  <aside id="hari-sidebar-left" class="sidebar-left" style="background-image: url('{% static 'images/hari_image13.png' %}');">
+    <!-- Full Height Overlay for Readability -->
+    <div style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.95) 100%); z-index: 1;"></div>
+
+    <!-- Profile Info (On top of overlay) -->
+    <div style="padding: 100px 24px 40px; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; z-index: 2;">
+      <div onclick="openHariProfile()" style="width: 140px; height: 140px; border-radius: 40px; overflow: hidden; border: 4px solid white; box-shadow: 0 12px 30px rgba(0,0,0,0.15); background: white; margin-bottom: 24px; transform: rotate(-3deg); cursor:pointer; transition:opacity 0.2s;" onmouseover="this.style.opacity=0.85" onmouseout="this.style.opacity=1">
+        <img id="hari-sidebar-profile-img" src="{% static 'images/hari_image19.webp' %}" alt="Hari" style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+      <div>
+        <h2 style="font-size: 24px; font-weight: 700; color: var(--text-main); margin-bottom: 6px;">하리 (Hari)</h2>
+        <!-- 일상적인 상태 메시지 -->
+        <p id="hari-sidebar-status" style="font-size: 14px; color: var(--text-dim); font-weight: 400; opacity: 0.9; letter-spacing: -0.01em;">
+          다음 영상 뭐 하지 🤔
+        </p>
+      </div>
+    </div>
+    
+    <div style="margin-top: auto; padding: 24px; position: relative; z-index: 2;">
+      <button onclick="goBack()" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.1); background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); cursor: pointer; font-weight: 500; color: var(--text-dim); transition: all 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+        ← Back to Home
+      </button>
+    </div>
+  </aside>
+
+  <!-- CENTER: CHAT AREA -->
+  <main class="chat-main" id="chatMain">
+    {% include "frontend/includes/chat/_header.html" %}
+    
+    {% include "frontend/includes/chat/_messages.html" %}
+    
+    <div style="position: sticky; bottom: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(20px); border-top: 1px solid var(--border); padding: 16px 24px;">
+      {% include "frontend/includes/chat/_input.html" %}
+    </div>
+  </main>
+
+</div>
+
+<!-- SEARCH MODAL (Restored) -->
+<div id="searchModal" style="display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); align-items: flex-start; justify-content: flex-end; padding: 24px;">
+  <div class="search-modal-panel" style="width: 100%; max-width: 360px; height: auto; max-height: calc(100vh - 48px); border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); display: flex; flex-direction: column; overflow: hidden; animation: slideInRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+    <div style="padding: 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;">
+      <h3 style="font-size: 16px; font-weight: 600; color: var(--text-main);">🔍 대화 내용 검색</h3>
+      <button onclick="closeSearch()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-dim);">×</button>
+    </div>
+    <div style="padding: 20px; overflow-y: auto;">
+      {% include "frontend/includes/chat/_search.html" %}
+    </div>
+  </div>
+</div>
+
+<style>
+/* 검색 모달 패널 */
+.search-modal-panel {
+  background: var(--header-bg);
+}
+html[data-theme="dark"] .search-modal-panel {
+  background: #3d2838;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+html[data-theme="dark"] .search-input-wrapper {
+  background: #2a1e28 !important;
+  border-color: rgba(255,138,155,0.2) !important;
+}
+html[data-theme="dark"] .search-input-wrapper:focus-within {
+  background: #3d2838 !important;
+}
+html[data-theme="dark"] .date-filter-panel {
+  background: #2a1e28 !important;
+  border-color: rgba(255,138,155,0.2) !important;
+}
+html[data-theme="dark"] .date-input {
+  background: #2a1e28;
+  color: var(--text-main);
+  border-color: rgba(255,138,155,0.2);
+}
+html[data-theme="dark"] .search-result-item {
+  background: #2a1e28;
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes highlightMessage {
+  0% { background-color: transparent; }
+  15% { background-color: rgba(255, 123, 138, 0.2); border-radius: 12px; }
+  85% { background-color: rgba(255, 123, 138, 0.2); border-radius: 12px; }
+  100% { background-color: transparent; border-radius: 12px; }
+}
+.highlight-anim {
+  animation: highlightMessage 2s ease-out;
+}
+</style>
+
+<script id="django-data" type="application/json">
+  {
+    "isAuthenticated": {% if user.is_authenticated %}true{% else %}false{% endif %},
+    "isDebug": {% if debug %}true{% else %}false{% endif %},
+    "userName": "{{ user.username|default:'' }}",
+    "loginUrl": "{% url 'home' %}",
+    "csrfToken": "{{ csrf_token }}"
+  }
+</script>
+
+<script>
+/**
+ * ═══════════════════════════════════════
+ * GLOBAL STATE & CONFIG
+ * ═══════════════════════════════════════
+ */
+const djangoData = JSON.parse(document.getElementById('django-data').textContent);
+const { isAuthenticated, isDebug, userName, loginUrl, csrfToken } = djangoData;
+
+const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+let chatSocket = null;
+let currentSessionId = null;
+let chatHistory = [];
+let lastMessageDate = null;
+
+// Auto-scroll state
+let userScrolledUp = false;
+let programmaticScroll = false;
+
+// Multi-bubble queue state
+let bubbleQueue = [];
+let bubbleTimer = null;
+let isBubbleAnimating = false;
+
+// Message batching (typing-aware) state for WebSocket
+let userMessageBuffer = [];
+let debounceTimer = null;
+let typingCheckTimer = null;
+let maxWaitTimer = null;
+let isUserTyping = false;
+const IDLE_FLUSH_DELAY = 2500;   // ms after last Enter, if not typing
+const TYPING_STOP_DELAY = 1500;  // ms after user stops typing to re-check flush
+const MAX_WAIT_DELAY = 10000;    // safety net: always flush within 10s
+let messageCounter = 0;          // Auto-increment message ID
+
+
+/**
+ * ═══════════════════════════════════════
+ * CORE CHAT FUNCTIONS
+ * ═══════════════════════════════════════
+ */
+
+// Initialize WebSocket
+function connectWebSocket(sessionId = null) {
+  if (chatSocket) chatSocket.close();
+
+  const wsPath = sessionId ? `/ws/chat/${sessionId}/` : '/ws/chat/';
+  chatSocket = new WebSocket(protocol + window.location.host + wsPath);
+
+  chatSocket.onopen = function() {
+    console.log('[WS] Connected:', protocol + window.location.host + wsPath);
+    // Keep-alive ping every 30s to prevent ALB idle timeout
+    if (window._wsPingInterval) clearInterval(window._wsPingInterval);
+    window._wsPingInterval = setInterval(() => {
+      if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+        chatSocket.send(JSON.stringify({ ping: true }));
+      }
+    }, 30000);
+  };
+
+  chatSocket.onerror = function(err) {
+    console.error('[WS] Connection error:', err);
+  };
+
+  chatSocket.onmessage = function(e) {
+    let data;
+    try {
+        data = JSON.parse(e.data);
+    } catch(err) {
+        console.error("WS error parsing:", err);
+        return;
+    }
+    
+    if (data.sender === 'hari') {
+      // If user is typing more, the buffer will be flushed before Hari speaks
+      if (debounceTimer || typingCheckTimer || maxWaitTimer) {
+        clearTimeout(debounceTimer); clearTimeout(typingCheckTimer); clearTimeout(maxWaitTimer);
+        debounceTimer = null; typingCheckTimer = null; maxWaitTimer = null;
+        flushMessageBuffer();
+      }
+
+      if (isBubbleAnimating) {
+        const newSegments = splitMessage(sanitizeHari(data.message));
+        if (newSegments.length > 0) {
+          if (bubbleQueue.length > 0) {
+            bubbleQueue[bubbleQueue.length - 1].isLast = false;
+          }
+          newSegments.forEach((seg, i) => {
+            bubbleQueue.push({ text: seg, isLast: i === newSegments.length - 1 });
+          });
+        }
+      } else {
+        appendHariMessage(data.message);
+      }
+    }
+  };
+
+  chatSocket.onclose = function(e) {
+    console.warn('[WS] Closed. code:', e.code, 'reason:', e.reason);
+    if (e.code === 4401) {
+      // Unauthenticated — redirect to login
+      window.location.href = loginUrl;
+    } else if (e.code !== 1000) {
+      // Unexpected close — attempt reconnect after 3s
+      console.log('[WS] Attempting reconnect in 3s...');
+      setTimeout(() => connectWebSocket(currentSessionId), 3000);
+    }
+  };
+}
+
+// Send Message Logic
+function sendMessage() {
+  const input = document.getElementById('messageInput');
+  const text = input.value.trim();
+  if (!text) return;
+  
+  if (!isAuthenticated && !isDebug) {
+    alert('로그인이 필요해! 🌸');
+    window.location.href = loginUrl;
+    return;
+  }
+  
+  // Add to UI immediately
+  addMessage('me', text);
+  
+  // Clear input
+  input.value = '';
+  input.style.height = 'auto';
+  isUserTyping = false;
+
+  // Handle WebSocket transmission OR Local Fallback
+  if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+    userMessageBuffer.push(text);
+    if (debounceTimer) clearTimeout(debounceTimer);
+    if (typingCheckTimer) clearTimeout(typingCheckTimer);
+    debounceTimer = setTimeout(tryFlush, IDLE_FLUSH_DELAY);
+
+    // Start max wait timer only on the FIRST buffered message
+    if (!maxWaitTimer) {
+      maxWaitTimer = setTimeout(tryFlush, MAX_WAIT_DELAY);
+    }
+  } else {
+    // Local Fallback Simulation
+    showTyping();
+    setTimeout(() => {
+      hideTyping();
+      const reply = getHariReply(text);
+      appendHariMessage(reply);
+    }, 1000 + Math.random() * 1000);
+  }
+}
+
+function tryFlush() {
+  const input = document.getElementById('messageInput');
+  if ((input && input.value.trim().length > 0) || isUserTyping) {
+    // Still typing — retry later
+    if (userMessageBuffer.length > 0) {
+      debounceTimer = setTimeout(tryFlush, IDLE_FLUSH_DELAY);
+    }
+    return;
+  }
+  if (userMessageBuffer.length === 0) return;
+  flushMessageBuffer();
+}
+
+function flushMessageBuffer() {
+  if (userMessageBuffer.length === 0) return;
+
+  // Clean up all timers
+  if (typingCheckTimer) { clearTimeout(typingCheckTimer); typingCheckTimer = null; }
+  if (debounceTimer) { clearTimeout(debounceTimer); debounceTimer = null; }
+  if (maxWaitTimer) { clearTimeout(maxWaitTimer); maxWaitTimer = null; }
+  isUserTyping = false;
+
+  // If Hari is still animating, wait and retry after animation finishes
+  if (isBubbleAnimating) {
+    debounceTimer = setTimeout(flushMessageBuffer, 500);
+    return;
+  }
+
+  const messages = [...userMessageBuffer];
+  userMessageBuffer = [];
+
+  showTyping();
+  if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+    // Save each message as a separate DB record (no AI call)
+    messages.forEach(msg => {
+      chatSocket.send(JSON.stringify({
+        'message': msg,
+        'save_only': true
+      }));
+    });
+    // Send combined text to AI engine (no DB save — already saved individually above)
+    const combined = messages.join('\n');
+    chatSocket.send(JSON.stringify({
+      'message': combined,
+      'skip_save': true
+    }));
+  }
+}
+
+// UI Rendering for Hari (Multi-bubble support)
+function sanitizeHari(text) {
+  if (!text) return text;
+  return text.replace(/`{1,3}/g, '').replace(/\*{1,2}/g, '').replace(/^#{1,3}\s/gm, '');
+}
+
+function splitMessage(text) {
+  if (!text) return [];
+  // 빈 줄(\n\n 이상)에서만 말풍선 분리, 단순 줄바꿈은 같은 말풍선 내 <br>로 처리
+  return text.split(/\n{2,}/).map(s => s.trim()).filter(s => s.length > 0);
+}
+
+function renderSingleHariBubble(text, options = {}) {
+  const { isFirst = true, isLast = true, animate = true, timestamp = null } = options;
+  const messages = document.getElementById('messages');
+  const now = timestamp ? new Date(timestamp) : new Date();
+  const timeStr = formatTime(now);
+  const dateKey = checkAndAddDateDivider(now);
+
+  const msgId = 'msg-' + (++messageCounter);
+  chatHistory.push({ id: msgId, date: dateKey, time: timeStr, sender: 'hari', text: text });
+
+  // 연속 말풍선 클래스 결정
+  let groupClass = '';
+  if (!isFirst && !isLast) groupClass = 'bubble-mid continued';
+  else if (!isFirst && isLast) groupClass = 'bubble-last continued';
+  else if (isFirst && !isLast) groupClass = 'bubble-first continued';
+
+  // 직전 말풍선의 시간 숨기기 (연속일 때)
+  if (!isFirst) {
+    const prev = messages.querySelector('.message-group.other:last-child');
+    if (prev) {
+      const prevMeta = prev.querySelector('.msg-meta');
+      if (prevMeta) prevMeta.style.display = 'none';
+    }
+  }
+
+  const html = `
+    <div class="message-group other ${groupClass} ${animate ? '' : 'no-animate'}" id="${msgId}">
+      <div class="msg-profile" onclick="openHariProfile()" title="하리 프로필 보기" style="${isFirst ? 'cursor:pointer;' : 'visibility:hidden;width:44px;flex-shrink:0;'}">
+        <img src="${window.hariCurrentProfile || '{% static 'images/hari_image19.webp' %}'}" style="width:100%;height:100%;border-radius:inherit;object-fit:cover;">
+      </div>
+      <div class="msg-content">
+        ${isFirst ? '<div class="msg-name">하리</div>' : ''}
+        <div class="msg-bubble-row">
+          <div class="msg-bubble">${escapeHtml(text)}</div>
+          ${isLast ? `<div class="msg-meta"><span class="msg-time">${timeStr}</span></div>` : ''}
+        </div>
+      </div>
+    </div>
+  `;
+  messages.insertAdjacentHTML('beforeend', html);
+  scrollToBottom();
+}
+
+function appendHariMessage(text, isHistory = false, timestamp = null) {
+  const segments = splitMessage(sanitizeHari(text));
+  if (segments.length === 0) return;
+
+  if (isHistory) {
+    hideTyping();
+    segments.forEach((seg, i) => {
+      renderSingleHariBubble(seg, { isFirst: i === 0, isLast: i === segments.length - 1, animate: false, timestamp });
+    });
+    return;
+  }
+
+  isBubbleAnimating = true;
+  const firstDelay = 1000 + Math.random() * 500;
+  bubbleTimer = setTimeout(() => {
+    hideTyping();
+    renderSingleHariBubble(segments[0], { isFirst: true, isLast: segments.length === 1, animate: true });
+
+    if (segments.length > 1) {
+      // slice(1) 이후 인덱스 기준: 마지막은 i === segments.length - 2
+      bubbleQueue = segments.slice(1).map((seg, i) => ({ text: seg, isLast: i === segments.length - 2 }));
+      scheduleNextBubble();
+    } else {
+      isBubbleAnimating = false;
+    }
+  }, firstDelay);
+}
+
+function scheduleNextBubble() {
+  if (bubbleQueue.length === 0) {
+    isBubbleAnimating = false;
+    return;
+  }
+  showTyping();
+  const delay = 1200 + Math.random() * 800;
+  bubbleTimer = setTimeout(() => {
+    hideTyping();
+    const item = bubbleQueue.shift();
+    renderSingleHariBubble(item.text, { isFirst: false, isLast: item.isLast, animate: true });
+    scheduleNextBubble();
+  }, delay);
+}
+
+/**
+ * ═══════════════════════════════════════
+ * UI HELPERS & UTILS
+ * ═══════════════════════════════════════
+ */
+
+function addMessage(sender, content, type = 'text', timestamp = null) {
+  const messages = document.getElementById('messages');
+  const now = timestamp ? new Date(timestamp) : new Date();
+  const dateKey = checkAndAddDateDivider(now);
+  const timeStr = formatTime(now);
+  const displayContent = type === 'text' ? escapeHtml(content) : content;
+  
+  const msgId = 'msg-' + (++messageCounter);
+  chatHistory.push({ id: msgId, date: dateKey, time: timeStr, sender: sender, text: type === 'text' ? content : '[파일]' });
+  
+  if (sender === 'me') {
+    const html = `
+      <div class="message-group me" id="${msgId}">
+        <div class="msg-content">
+          <div class="msg-bubble-row">
+            <div class="msg-meta"><span class="msg-time">${timeStr}</span></div>
+            <div class="msg-bubble">${displayContent}</div>
+          </div>
+        </div>
+      </div>
+    `;
+    messages.insertAdjacentHTML('beforeend', html);
+  } else {
+    renderSingleHariBubble(content);
+    return;
+  }
+  userScrolledUp = false;
+  scrollToBottom();
+}
+
+function checkAndAddDateDivider(date) {
+  const dateOptions = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+  const dateStr = date.toLocaleDateString('ko-KR', dateOptions);
+  const dateKey = date.toISOString().split('T')[0]; // YYYY-MM-DD
+  
+  if (lastMessageDate !== dateKey) {
+    const messages = document.getElementById('messages');
+    // 중복 방지: 이미 해당 날짜의 구분선이 있는지 확인
+    const dividers = Array.from(document.querySelectorAll('.date-divider-text'));
+    const exists = dividers.some(el => el.textContent.trim() === dateStr.trim());
+    
+    if (!exists) {
+      const dividerHTML = `<div class="date-divider"><span class="date-divider-text">${dateStr}</span></div>`;
+      messages.insertAdjacentHTML('beforeend', dividerHTML);
+    }
+    lastMessageDate = dateKey;
+  }
+  return dateKey;
+}
+
+function formatTime(date) {
+  let hours = date.getHours();
+  const minutes = date.getMinutes();
+  const ampm = hours >= 12 ? '오후' : '오전';
+  hours = hours % 12 || 12;
+  return `${ampm} ${hours}:${String(minutes).padStart(2, '0')}`;
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML.replace(/\n/g, '<br>');
+}
+
+function scrollToBottom() {
+  const container = document.getElementById('chatContainer');
+  if (!container) return;
+  if (userScrolledUp) return;
+  programmaticScroll = true;
+  requestAnimationFrame(() => {
+    container.scrollTop = container.scrollHeight;
+    setTimeout(() => { programmaticScroll = false; }, 200);
+  });
+}
+
+function forceScrollToBottom() {
+  const container = document.getElementById('chatContainer');
+  if (!container) return;
+  userScrolledUp = false;
+  programmaticScroll = true;
+  container.scrollTop = container.scrollHeight;
+  setTimeout(() => { programmaticScroll = false; }, 200);
+  const btn = document.getElementById('scrollToBottomBtn');
+  if (btn) btn.classList.remove('visible');
+}
+
+function showTyping() {
+  if (document.getElementById('typingIndicator')) return;
+  const messages = document.getElementById('messages');
+  const typingHTML = `
+    <div class="typing-indicator" id="typingIndicator">
+      <div class="msg-profile" onclick="openHariProfile()" title="하리 프로필 보기" style="cursor:pointer;">
+        <img src="${window.hariCurrentProfile || '{% static 'images/hari_image19.webp' %}'}" style="width: 100%; height: 100%; border-radius: inherit; object-fit: cover;">
+      </div>
+      <div class="typing-bubble">
+        <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+      </div>
+    </div>
+  `;
+  messages.insertAdjacentHTML('beforeend', typingHTML);
+  scrollToBottom();
+}
+
+function hideTyping() {
+  const typing = document.getElementById('typingIndicator');
+  if (typing) typing.remove();
+}
+
+/**
+ * ═══════════════════════════════════════
+ * SEARCH & SIDEBAR LOGIC
+ * ═══════════════════════════════════════
+ */
+
+function openSearch() {
+  const modal = document.getElementById('searchModal');
+  modal.style.display = 'flex';
+  setTimeout(() => { document.getElementById('searchInput').focus(); }, 100);
+}
+
+function closeSearch() {
+  document.getElementById('searchModal').style.display = 'none';
+}
+
+let currentSearchTab = 'keyword';
+
+function switchSearchTab(event, tab) {
+  currentSearchTab = tab;
+  document.querySelectorAll('.search-tab').forEach(t => t.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('dateFilter').style.display = (tab === 'date') ? 'flex' : 'none';
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchResults').innerHTML = `
+    <div class="search-no-results" style="text-align: center; padding: 40px 10px; color: var(--text-dim);">
+      <div style="font-size: 32px; margin-bottom: 12px; opacity: 0.3;">💬</div>
+      <div style="font-size: 13px; line-height: 1.6;">
+        ${tab === 'date' ? '날짜를 선택하고 검색해줘!' : '검색어를 입력해줘!'}
+      </div>
+    </div>`;
+}
+
+function performSearch() {
+  if (currentSearchTab !== 'keyword') return;
+  const query = document.getElementById('searchInput').value.trim().toLowerCase();
+  const resultsContainer = document.getElementById('searchResults');
+  if (!query) {
+    resultsContainer.innerHTML = '<div class="search-no-results">검색어를 입력해줘!</div>';
+    return;
+  }
+  const results = chatHistory.filter(msg => msg.text.toLowerCase().includes(query));
+  displaySearchResults(results, query);
+}
+
+function searchByDate() {
+  const from = document.getElementById('dateFrom').value;
+  const to = document.getElementById('dateTo').value;
+  if (!from || !to) {
+    document.getElementById('searchResults').innerHTML = `
+      <div style="margin-top:8px; padding:16px 18px; background:rgba(255,123,138,0.08); border:1px solid rgba(255,123,138,0.3); border-radius:14px; display:flex; align-items:center; gap:12px;">
+        <span style="font-size:22px; flex-shrink:0;">📅</span>
+        <div>
+          <div style="font-size:13px; font-weight:600; color:var(--hari-pink); margin-bottom:2px;">날짜를 모두 선택해줘!</div>
+          <div style="font-size:11px; color:var(--text-dim); line-height:1.5;">From · To 날짜를 모두 지정해야<br>검색할 수 있어요.</div>
+        </div>
+      </div>`;
+    return;
+  }
+  const results = chatHistory.filter(msg => msg.date >= from && msg.date <= to);
+  displaySearchResults(results);
+}
+
+function displaySearchResults(results, keyword = null) {
+  const container = document.getElementById('searchResults');
+  if (results.length === 0) {
+    container.innerHTML = '<div class="search-no-results">결과가 없어 😥</div>';
+    return;
+  }
+  let html = '';
+  results.forEach(msg => {
+    let preview = msg.text;
+    if (keyword) {
+      const regex = new RegExp(`(${keyword})`, 'gi');
+      preview = preview.replace(regex, '<mark>$1</mark>');
+    }
+    html += `
+      <div class="search-result-item" onclick="scrollToMessage('${msg.id}')" style="cursor: pointer;">
+        <div class="search-result-date">${msg.date} ${msg.time}</div>
+        <div class="search-result-preview">${preview}</div>
+        <div class="search-result-sender">${msg.sender === 'hari' ? '하리' : '나'}</div>
+      </div>
+    `;
+  });
+  container.innerHTML = html;
+}
+
+function scrollToMessage(id) {
+  closeSearch();
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.add('highlight-anim');
+    setTimeout(() => el.classList.remove('highlight-anim'), 2000);
+  } else {
+    alert("이전 메시지를 불러오는 중이거나 찾을 수 없습니다.");
+  }
+}
+
+/**
+ * ═══════════════════════════════════════
+ * EVENT LISTENERS
+ * ═══════════════════════════════════════
+ */
+
+// Input sizing & shortcuts
+function autoResize(textarea) {
+  textarea.style.height = 'auto';
+  textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+}
+
+function onTextareaInput(textarea) {
+  autoResize(textarea);
+  const hasText = textarea.value.trim().length > 0;
+  isUserTyping = hasText;
+
+  // User cleared the textarea while buffer has messages — start short timer to flush
+  if (!hasText && userMessageBuffer.length > 0) {
+    if (typingCheckTimer) clearTimeout(typingCheckTimer);
+    typingCheckTimer = setTimeout(tryFlush, TYPING_STOP_DELAY);
+  }
+
+  // User is typing — cancel the idle flush timer (max wait still runs)
+  if (hasText && debounceTimer) {
+    clearTimeout(debounceTimer);
+    debounceTimer = null;
+  }
+}
+
+function handleKeyPress(event) {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    sendMessage();
+  }
+}
+
+
+// Global Click Handlers
+document.addEventListener('click', (e) => {
+  // Global click outside handlers can represent here
+});
+
+// ═══════════════════════════════════════
+// Chat History & Fallback
+// ═══════════════════════════════════════
+async function loadHistory() {
+  if (!isAuthenticated) return;
+  try {
+    const response = await fetch('/api/chat/api/messages/');
+    if (!response.ok) return;
+    const data = await response.json();
+    const messages = Array.isArray(data) ? data : (data.results || []);
+    if (messages.length > 0) {
+      messages.forEach(msg => {
+        if (msg.sender_type) {
+          addMessage('me', msg.content, 'text', msg.created_at);
+        } else {
+          appendHariMessage(msg.content, true, msg.created_at);
+        }
+      });
+    }
+  } catch (error) {
+    console.error('Error loading history:', error);
+  }
+}
+
+function goBack() {
+  window.location.href = '/';
+}
+
+function handleFileUpload(event) {
+  // File upload not yet implemented
+}
+
+function getHariReply(text) {
+  const replies = [
+    '아 미안 지금 연결이 좀 불안정해ㅜㅜ 잠깐만 기다려줘!',
+    '잠깐 인터넷이 이상한 듯? 다시 말해줘!',
+    '어 잠깐 연결이 끊겼어 다시 해볼게!',
+  ];
+  return replies[Math.floor(Math.random() * replies.length)];
+}
+
+// ═══════════════════════════════════════
+// Initialize
+// ═══════════════════════════════════════
+connectWebSocket();
+loadHistory().then(() => {
+  userScrolledUp = false;
+  scrollToBottom();
+
+  // Register scroll listener AFTER initial load so history rendering
+  // doesn't accidentally set userScrolledUp = true
+  setTimeout(() => {
+    const chatContainerEl = document.getElementById('chatContainer');
+    if (chatContainerEl) {
+      chatContainerEl.addEventListener('scroll', () => {
+        if (programmaticScroll) return;
+        const nearBottom = chatContainerEl.scrollHeight - chatContainerEl.scrollTop - chatContainerEl.clientHeight < 150;
+        userScrolledUp = !nearBottom;
+        const btn = document.getElementById('scrollToBottomBtn');
+        if (btn) btn.classList.toggle('visible', userScrolledUp);
+      });
+    }
+  }, 300);
+});
+
+// Cleanly close WebSocket on page exit so disconnect() fires on the server
+window.addEventListener('beforeunload', () => {
+  if (chatSocket) chatSocket.close();
+});
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,148 @@
+    <!-- ── 마이페이지 (기본 랜딩) ── -->
+    <div class="pg on" id="pg-abouthari" data-title="About Bori">
+
+      <!-- ① 프로필 카드: 계정정보 + 유저정보 즉시 노출 -->
+      <div class="card" style="padding:0; overflow:hidden; margin-bottom:1rem;">
+        <!-- 배너 -->
+        <div style="height:72px; background:linear-gradient(135deg,#fce4e8 0%,#f9d6e4 55%,#e8d4f0 100%); position:relative;">
+          <div style="position:absolute; inset:0; background:repeating-linear-gradient(135deg, transparent, transparent 10px, rgba(255,255,255,0.12) 10px, rgba(255,255,255,0.12) 11px);"></div>
+        </div>
+
+        <!-- 카드 본문 -->
+        <div style="padding:0 1.8rem 1.8rem;">
+          <!-- 사용자명 + Fan+ 행 -->
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:.9rem 0 1.4rem;">
+            <div>
+              <div style="font-family:'NeoDunggeunmo',sans-serif; font-size:1.1rem; letter-spacing:.04em; color:var(--ink); margin-bottom:.25rem;">{{ user.username|default:"사용자" }}</div>
+              <span class="subscription-plan-label" data-subscription-plan-label style="font-size:.7rem; color:var(--dim); letter-spacing:.05em;">Fan+ · 활성</span>
+            </div>
+            <span class="subscription-plan-badge" data-subscription-plan-badge style="font-size:.55rem; letter-spacing:.12em; text-transform:uppercase; background:var(--acc); color:#fff; padding:3px 10px; border-radius:20px; font-weight:600; flex-shrink:0;">FAN+</span>
+          </div>
+
+          <!-- 계정 정보 편집 필드 2×2 -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:.6rem; margin-bottom:.6rem;">
+            <div class="info-item">
+              <span class="info-lbl">이름</span>
+              <input class="info-val-input" id="profile-name" type="text" placeholder="이름을 입력하세요"
+                     onfocus="showNameWarning()">
+            </div>
+            <div class="info-item">
+              <span class="info-lbl">이메일</span>
+              <input class="info-val-input" id="profile-email" type="email"
+                     value="{{ user.email|default:'' }}" readonly
+                     style="cursor:default; color:var(--dim);">
+            </div>
+            <div class="info-item">
+              <span class="info-lbl">가입일</span>
+              <span class="info-val">{{ user.date_joined|date:"Y.m.d"|default:"—" }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-lbl">멤버십</span>
+              <span class="info-val subscription-plan-label" data-subscription-plan-label style="color:var(--acc);">Fan+ · 활성</span>
+            </div>
+          </div>
+
+          <!-- 저장 버튼 -->
+          <button class="save-btn" onclick="saveProfile()">저장하기 →</button>
+        </div>
+      </div>
+
+      <!-- 구독 정보 카드 -->
+      <div class="card" style="margin-bottom:1rem;">
+        <div class="c-title">구독 정보</div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--bdr);margin-bottom:.9rem;">
+          <div style="background:var(--bg);padding:.9rem 1rem;">
+            <span style="font-family:'NeoDunggeunmo',monospace;font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:.25rem;">이용 중</span>
+            <span class="subscription-state" data-subscription-state style="font-size:.85rem;color:var(--acc);">● Fan+ · 활성</span>
+          </div>
+          <div style="background:var(--bg);padding:.9rem 1rem;">
+            <span style="font-family:'NeoDunggeunmo',monospace;font-size:.52rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:.25rem;">다음 결제</span>
+            <span class="subscription-next-billing" data-subscription-next-billing style="font-size:.85rem;color:var(--ink);">2025.05.01</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:.5rem;">
+          <button class="save-btn" data-subscription-manage style="background:transparent;border:0.5px solid var(--bdr2);color:var(--dim);font-size:.6rem;box-shadow:none;" onclick="window.location.href='/membership/'">구독 관리</button>
+          <button class="save-btn" data-subscription-cancel style="background:transparent;border:0.5px solid rgba(200,74,58,.35);color:#c84a3a;font-size:.6rem;box-shadow:none;" onclick="openSubscriptionCancelModal()">구독 취소</button>
+        </div>
+      </div>
+
+      <!-- 계정 관리 카드 -->
+      <div class="card">
+        <div class="c-title">위험 구역</div>
+        <div class="danger-zone" style="border-radius:10px;">
+          <div class="dz-title">계정 관리</div>
+          <div style="display:flex;gap:.6rem;flex-wrap:wrap">
+            <button class="dz-btn" type="button" onclick="doLogout()">로그아웃</button>
+            <button class="dz-btn" type="button" onclick="openWithdrawalModal()">회원 탈퇴</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 이름 변경 경고 팝업 -->
+    <div id="name-warning-modal"
+         style="display:none; position:fixed; inset:0; background:rgba(42,36,32,0.45); z-index:500; align-items:center; justify-content:center;">
+      <div style="background:var(--bg); border:0.5px solid var(--bdr2); border-radius:18px; padding:2rem 2.2rem; max-width:320px; width:90%; box-shadow:0 8px 40px rgba(255,123,138,0.18); text-align:center;">
+        <div style="font-size:1.6rem; margin-bottom:.8rem;">✏️</div>
+        <div style="font-family:Pretendard,'Apple SD Gothic Neo','Noto Sans KR',sans-serif; font-size:.55rem; letter-spacing:.18em; text-transform:uppercase; color:var(--acc); margin-bottom:.6rem;">이름 변경 안내</div>
+        <p style="font-size:.88rem; color:var(--ink); line-height:1.6; margin-bottom:1.4rem;">
+          이 이름은 <strong>하리가 당신을 부를 이름</strong>이에요.<br>
+          변경하면 앞으로의 대화에 바로 반영돼요.
+        </p>
+        <button onclick="closeNameWarning()"
+                style="background:linear-gradient(135deg,var(--acc),#ff9aaa); border:none; color:#fff; font-family:Pretendard,'Apple SD Gothic Neo','Noto Sans KR',sans-serif; font-size:.6rem; letter-spacing:.16em; text-transform:uppercase; padding:.65rem 2rem; border-radius:25px; cursor:pointer; box-shadow:0 4px 14px rgba(255,123,138,0.3);">
+          알겠어요
+        </button>
+      </div>
+    </div>
+
+    <script>
+    // 페이지 로드 시 이름 불러오기
+    (function loadProfileName() {
+      fetch('/api/chat/api/user-name/', { credentials: 'include' })
+        .then(r => r.ok ? r.json() : Promise.reject(r))
+        .then(data => {
+          const input = document.getElementById('profile-name');
+          if (input && data.name) input.value = data.name;
+        })
+        .catch(() => {});
+    })();
+
+    let nameWarningShown = false;
+
+    function showNameWarning() {
+      if (nameWarningShown) return;
+      nameWarningShown = true;
+      const modal = document.getElementById('name-warning-modal');
+      modal.style.display = 'flex';
+    }
+
+    function closeNameWarning() {
+      document.getElementById('name-warning-modal').style.display = 'none';
+      document.getElementById('profile-name').focus();
+    }
+
+    function saveProfile() {
+      const nameInput = document.getElementById('profile-name');
+      const name = nameInput ? nameInput.value.trim() : '';
+      if (!name) { toast('이름을 입력해주세요'); return; }
+
+      fetch('/api/chat/api/user-name/', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify({ name }),
+      })
+        .then(r => r.ok ? r.json() : Promise.reject(r))
+        .then(() => toast('프로필이 저장되었어요 ✓'))
+        .catch(() => toast('저장에 실패했어요. 다시 시도해주세요'));
+    }
+
+    function getCookie(name) {
+      const v = document.cookie.match('(^|;)\\s*' + name + '\\s*=\\s*([^;]+)');
+      return v ? v.pop() : '';
+    }
+    </script>
