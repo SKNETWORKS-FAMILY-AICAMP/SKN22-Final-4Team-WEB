@@ -362,7 +362,16 @@ cp .env.example .env
 
 ---
 
-## 11. License
+## 11. 시연 영상
+
+1. [홈페이지](https://youtu.be/hkwjfSGKjyY)
+2. [하리와 1대1 채팅](https://youtu.be/YFqdvJwkNgs)
+3. [하리와 롤플레잉](https://youtu.be/ozDhitf2RJE)
+4. [영상 생성 자동화](https://youtu.be/ka4o2h4AwOg)
+
+---
+
+## 12. License
 
 이 프로젝트는 [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.ko) 라이선스를 따릅니다.
 - **비영리 목적으로만 사용 가능합니다.** (상업적 이용 금지)
