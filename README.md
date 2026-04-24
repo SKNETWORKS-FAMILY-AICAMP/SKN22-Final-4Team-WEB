@@ -141,7 +141,7 @@ python manage.py runserver
 
 ## 7. Project Structure
 
-현재 레포지토리의 상세 디렉토리 구조입니다.
+본 레포는 웹 애플리케이션 중심으로 구성되어 있으며, AI 파이프라인과 자동화 서비스, 음성/이미지 생성 자산에 대한 상세 구조와 구현 내용은 별도 레포인 [SKN22-Final-4Team-AI](https://github.com/minje0209-ux/SKN22-Final-4Team-AI)에서 확인할 수 있습니다.
 
 ```
 SKN22-Final-4Team-WEB/
