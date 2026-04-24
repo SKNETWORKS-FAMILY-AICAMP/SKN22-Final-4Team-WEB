@@ -10,6 +10,11 @@
 <p align="center">
   <img width="1920" height="800" alt="33633563980734-1" src="https://github.com/user-attachments/assets/1bfbeded-425e-4589-9dd7-eab0fce49be2" />
 </p>
+<p align="center">
+  <a href="https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN22-Final-4Team-AI">
+    <img src="https://img.shields.io/badge/AI_Repository-Automation_%7C_TTS_%7C_YouTube-FF6B35?style=for-the-badge&logo=github&logoColor=white" alt="AI Repository"/>
+  </a>
+</p>
 
 ---
 
