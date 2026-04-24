@@ -141,7 +141,7 @@ python manage.py runserver
 
 ## 7. Project Structure
 
-본 레포는 웹 애플리케이션 중심으로 구성되어 있으며, AI 파이프라인과 자동화 서비스, 음성/이미지 생성 자산에 대한 상세 구조와 구현 내용은 별도 레포인 [SKN22-Final-4Team-AI](https://github.com/minje0209-ux/SKN22-Final-4Team-AI)에서 확인할 수 있습니다.
+본 레포는 웹 애플리케이션 중심으로 구성되어 있으며, AI 파이프라인과 자동화 서비스, 음성/이미지 생성 자산에 대한 상세 구조와 구현 내용은 별도 레포인 [SKN22-Final-4Team-AI](https://github.com/SKNETWORKS-FAMILY-AICAMP/SKN22-Final-4Team-AI)에서 확인할 수 있습니다.
 
 ```
 SKN22-Final-4Team-WEB/
@@ -297,7 +297,7 @@ Nginx → Daphne reverse proxy 및 static/media 서빙
 * **Web Serving:** `web` 컨테이너는 `migrate`, `collectstatic`, `daphne`를 순서대로 실행하고, Nginx가 80 포트에서 Daphne(8000)로 프록시합니다.
 
 ### 환경 변수 (`.env` / EB 환경 설정)
-로컬 개발용 `.env` 파일은 [`backend/.env.example`](c:\Users\minje\Documents\SKN22-FINAL-4TEAM_WEB\backend\.env.example)을 복사해 생성합니다.
+로컬 개발용 `.env` 파일은 [`backend/.env.example`]을 복사해 생성합니다.
 
 ```bash
 cd backend
